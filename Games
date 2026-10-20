@@ -1,0 +1,169 @@
+
+const games = [
+  {
+    name: "Number Guess",
+    emoji: "🔢",
+    description: "Guess the secret number!",
+    type: "guess"
+  },
+  {
+    name: "Click Challenge",
+    emoji: "🖱️",
+    description: "Click the button to score points.",
+    type: "click"
+  },
+  {
+    name: "Math Challenge",
+    emoji: "🧠",
+    description: "Solve a math problem.",
+    type: "math"
+  }
+];
+
+const grid = document.getElementById("gameGrid");
+const gameArea = document.getElementById("gameArea");
+const gameTitle = document.getElementById("gameTitle");
+const gameContent = document.getElementById("gameContent");
+
+function showGames(list) {
+  grid.replaceChildren();
+
+  list.forEach(game => {
+    const card = document.createElement("div");
+    card.className = "game-card";
+
+    const emoji = document.createElement("div");
+    emoji.className = "emoji";
+    emoji.textContent = game.emoji;
+
+    const title = document.createElement("h3");
+    title.textContent = game.name;
+
+    const description = document.createElement("p");
+    description.textContent = game.description;
+
+    const button = document.createElement("button");
+    button.textContent = "Play";
+    button.addEventListener("click", () => openGame(game));
+
+    card.append(emoji, title, description, button);
+    grid.append(card);
+  });
+}
+
+function openGame(game) {
+  grid.hidden = true;
+  document.querySelector("main > h2").hidden = true;
+  gameArea.hidden = false;
+  gameTitle.textContent = game.name;
+  gameContent.replaceChildren();
+
+  if (game.type === "guess") startGuessGame();
+  if (game.type === "click") startClickGame();
+  if (game.type === "math") startMathGame();
+}
+
+function addText(parent, tag, text) {
+  const el = document.createElement(tag);
+  el.textContent = text;
+  parent.append(el);
+  return el;
+}
+
+function addButton(parent, text, action) {
+  const button = document.createElement("button");
+  button.textContent = text;
+  button.addEventListener("click", action);
+  parent.append(button);
+  return button;
+}
+
+// Game 1: Guess the number
+function startGuessGame() {
+  const secret = Math.floor(Math.random() * 10) + 1;
+
+  addText(gameContent, "p", "Guess a number from 1 to 10.");
+
+  const input = document.createElement("input");
+  input.type = "number";
+  input.min = 1;
+  input.max = 10;
+  input.placeholder = "Your guess";
+  gameContent.append(input);
+
+  const result = addText(gameContent, "p", "");
+
+  addButton(gameContent, "Guess", () => {
+    const guess = Number(input.value);
+
+    if (input.value === "" || !Number.isInteger(guess)
+        || guess < 1 || guess > 10) {
+      result.textContent = "Enter a number from 1 to 10.";
+    } else if (guess === secret) {
+      result.textContent = "🎉 Correct! You won!";
+    } else {
+      result.textContent =
+        guess < secret ? "Try higher!" : "Try lower!";
+    }
+  });
+}
+
+// Game 2: Click for points
+function startClickGame() {
+  let score = 0;
+
+  const result = addText(gameContent, "h3", "Score: 0");
+
+  addButton(gameContent, "Click me!", () => {
+    score++;
+    result.textContent = "Score: " + score;
+  });
+}
+
+// Game 3: Simple math
+function startMathGame() {
+  const a = Math.floor(Math.random() * 10) + 1;
+  const b = Math.floor(Math.random() * 10) + 1;
+
+  addText(gameContent, "p", `What is ${a} + ${b}?`);
+
+  const input = document.createElement("input");
+  input.type = "number";
+  input.placeholder = "Your answer";
+  gameContent.append(input);
+
+  const result = addText(gameContent, "p", "");
+
+  addButton(gameContent, "Submit", () => {
+    if (input.value === "") {
+      result.textContent = "Enter an answer.";
+    } else {
+      result.textContent =
+        Number(input.value) === a + b
+          ? "🎉 Correct!"
+          : "Try again!";
+    }
+  });
+}
+
+// Search games
+document.getElementById("search").addEventListener("input", event => {
+  const query = event.target.value.toLowerCase();
+
+  showGames(
+    games.filter(game =>
+      (game.name + " " + game.description)
+        .toLowerCase()
+        .includes(query)
+    )
+  );
+});
+
+// Back button
+document.getElementById("backButton").addEventListener("click", () => {
+  gameArea.hidden = true;
+  grid.hidden = false;
+  document.querySelector("main > h2").hidden = false;
+});
+
+showGames(games);

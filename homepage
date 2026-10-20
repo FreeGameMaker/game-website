@@ -1,0 +1,30 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Free Games</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>🎮 Free Games</h1>
+    <p>Play fun games right in your browser!</p>
+    <input id="search" placeholder="Search games...">
+  </header>
+
+  <main>
+    <h2>All Games</h2>
+    <div class="game-grid" id="gameGrid"></div>
+
+    <section id="gameArea" hidden>
+      <button id="backButton">← Back to games</button>
+      <h2 id="gameTitle"></h2>
+      <div id="gameContent"></div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
